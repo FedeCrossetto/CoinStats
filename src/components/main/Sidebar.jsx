@@ -21,7 +21,6 @@ export const Sidebar = () => {
     justifyContent="space-between"
     fontSize="xs"
      outline="1px solid rgba(178,178,178, .25)"
-     bg="white"
 >
     <Flex
         p="5%"

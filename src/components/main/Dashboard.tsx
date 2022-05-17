@@ -20,15 +20,16 @@ import {
   Heading,
   InputGroup,
   InputRightElement,
+  Spinner,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { BsArrowLeftShort, BsArrowRightShort } from "react-icons/bs";
-import {CakeChart} from '../layout/CakeChart';
+import { LineChart } from "../layout/LineChart";
 
 export const Dashboard = () => {
   const [coins, setCoins] = useState<any[]>([]);
   const [search, setSearch] = useState("");
-  const [allcoins, setAllCoins] = useState<any[]>([]);
+  const [value, setValue] = useState<any>([]);
   const [page, setPage] = useState(1);
   const APIURL = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=1000&page=${page}&sparkline=true`;
 
@@ -37,7 +38,7 @@ export const Dashboard = () => {
       .get(APIURL)
       .then((res) => {
         setCoins(res.data);
-         console.table(res.data);
+        console.table(res.data);
       })
       .catch((error) => console.log(error));
   }, [page]);
@@ -50,11 +51,15 @@ export const Dashboard = () => {
     coin.symbol.toLowerCase().includes(search.toLocaleLowerCase())
   );
 
-  const filteredSlice: any[]  = filteredCoins.slice(0,10);
+  const filteredSlice: any[] = filteredCoins.slice(0, 10);
 
-
-  const sendInfo = (val: string) => (_event: any)=>{
-    console.log('e',val)
+  const sendInfo = (val: any[]) => (_event: any) => {
+     console.log("e", val);
+    setValue(val);
+  };
+  
+  const formatNumber = (number:number) =>{
+    return new Intl.NumberFormat('de-DE',{ style: 'currency', currency: 'USD' }).format(number);
   }
 
   return (
@@ -69,12 +74,30 @@ export const Dashboard = () => {
             placeholder="Search coin..."
             onChange={(e) => handleChange(e)}
           />
-          <InputRightElement h="2rem" fontSize="xs" children={<SearchIcon color="brand.tertiary" />} />
+          <InputRightElement
+            h="2rem"
+            fontSize="xs"
+            children={<SearchIcon color="brand.tertiary" />}
+          />
         </InputGroup>
       </HStack>
-      {coins && (
+      {!coins ? (
+        <Container
+          my={["10rem", "12rem", "12rem", "14rem"]}
+          mx={["16rem", "16rem", "20rem", "28rem"]}
+        >
+          {" "}
+          <Spinner size="xl" color="brand.primary" />
+        </Container>
+      ) : (
         <TableContainer mt="2rem" border="0.9px" borderRadius="xl" color="grey">
-          <Table variant="simple" colorScheme="blackAlpha" size="xs" fontSize="xs" w={["40rem","50rem","60rem","70rem"]} >
+          <Table
+            variant="simple"
+            colorScheme="blackAlpha"
+            size="xs"
+            fontSize="xs"
+            w={["40rem", "50rem", "60rem", "70rem"]}
+          >
             <Thead>
               <Tr bg="brand.fourth">
                 <Th pl="1rem">Rank</Th>
@@ -83,7 +106,9 @@ export const Dashboard = () => {
                 <Th isNumeric>Change (24h)</Th>
                 <Th isNumeric>Total Supply</Th>
                 <Th isNumeric>Total Vol</Th>
-                <Th isNumeric pr="2rem">Last 7 days</Th>
+                <Th isNumeric pr="2rem">
+                  Last 7 days
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -95,12 +120,17 @@ export const Dashboard = () => {
                       <HStack>
                         <Image src={c.image} boxSize="1rem" />
                         <Text>{c.name}</Text>
-                        <Button  size="xs" textTransform="uppercase" fontSize="xs" onClick={sendInfo(c)}>
+                        <Button
+                          size="xs"
+                          textTransform="uppercase"
+                          fontSize="xs"
+                          onClick={sendInfo(c)}
+                        >
                           {c.symbol}
                         </Button>
                       </HStack>
                     </Td>
-                    <Td isNumeric>{c.current_price}</Td>
+                    <Td isNumeric>{formatNumber(c.current_price)}</Td>
                     <Td isNumeric>
                       <Text
                         color={
@@ -114,9 +144,9 @@ export const Dashboard = () => {
                     </Td>
                     <Td isNumeric>{c.total_supply}</Td>
                     <Td isNumeric>{c.total_volume}</Td>
-                    <Td >
+                    <Td>
                       <Image
-                        boxSize='4rem'
+                        boxSize="4rem"
                         h="2rem"
                         ml="3rem"
                         src={`https://www.coingecko.com/coins/${c.market_cap_rank}/sparkline`}
@@ -127,17 +157,19 @@ export const Dashboard = () => {
               })}
             </Tbody>
             <Tfoot>
-              <HStack fontSize="xs" mt="1rem">
+              <HStack fontSize="xs" mx="1rem" my="1rem">
                 <Button
                   onClick={() => setPage(page - 1)}
-                  disabled={page <= 1 ? true : false}
+                  h="2rem"
                   leftIcon={<BsArrowLeftShort />}
+                  disabled={page <= 1 ? true : false}
                 >
                   <Text fontSize="xs">Prev</Text>
                 </Button>
                 <Box>{page}</Box>
                 <Button
                   onClick={() => setPage(page + 1)}
+                  h="2rem"
                   rightIcon={<BsArrowRightShort />}
                 >
                   <Text fontSize="xs">Next</Text>
@@ -147,7 +179,9 @@ export const Dashboard = () => {
           </Table>
         </TableContainer>
       )}
-      <CakeChart/>
+      <Box >
+      <LineChart />
+      </Box>
     </Container>
   );
 };
