@@ -4,7 +4,6 @@ import {
   Container,
   Box,
 } from "@chakra-ui/react";
-import { CakeChart } from "./CakeChart";
 
 export const History = () => {
   return (
