@@ -6,7 +6,8 @@ import {
     Link,
     Menu,
     MenuButton,
-    MenuList
+    MenuList,
+    Tooltip
 } from '@chakra-ui/react'
 
 export const SidebarItem = ({ name,icon, title, description, active, navSize }) => {
@@ -20,18 +21,20 @@ export const SidebarItem = ({ name,icon, title, description, active, navSize }) 
     <Menu placement="right">
         <Link
             href={name}
-            backgroundColor={active && "brand.primary"}
+            // backgroundColor={active && "brand.primary"}
             p={3}
+            color="brand.tertiary"
             borderRadius={8}
-            _hover={{ textDecor: 'none', backgroundColor: "brand.primary" }}
+             _hover={{ textDecor: 'none', backgroundColor: "brand.primary" , color: "white" }}
             w={navSize == "large" && "100%"}
-        >
+        >   <Tooltip label={title}>
             <MenuButton w="100%">
                 <Flex>
-                    <Icon as={icon} fontSize="xl" color={active ? "brand.primary" : "gray.500"} />
+                    <Icon as={icon} fontSize="xl" color={active && "brand.primary"} />
                     <Text ml={5} display={navSize == "small" ? "none" : "flex"}>{title}</Text>
                 </Flex>
             </MenuButton>
+            </Tooltip>
         </Link>
         {/* <MenuList
             py={0}

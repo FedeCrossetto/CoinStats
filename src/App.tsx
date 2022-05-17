@@ -3,8 +3,9 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme/theme";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 //Components
-import { TableInfo } from "./components/main/TableInfo";
+import { Dashboard } from "./components/main/Dashboard";
 import { Sidebar } from "./components/main/Sidebar";
+import {History} from "./components/layout/History";
 
 function App() {
   return (
@@ -12,9 +13,10 @@ function App() {
       <Sidebar />
       <Router>
         <Routes>
-        <Route path="/table" element={<TableInfo />} />
-        <Route path="/" element={<TableInfo />} />
-        <Route path="*" element={<TableInfo />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/history" element={<History />} />
+        <Route path="*" element={<Dashboard />} />
         </Routes>
       </Router>
     </ChakraProvider>
